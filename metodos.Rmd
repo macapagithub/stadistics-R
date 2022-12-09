@@ -6,14 +6,20 @@ output:
   html_document: default
   pdf_document: default
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Introducción
 
-Los examenes Saber11 son los examenes que se usan en Colombia alfinaliar la educación superior para acceder a
+Los datos que se usaran en este trabajo, son los resultados de las pruebas ICFES, que se realizaron en el segundo semestre de 2011. El ICFES es un acrónimo que se refiere a Instituto Colombiano para la Evaluación de la Educación Superior. Se trata de una entidad gubernamental de Colombia encargada de llevar a cabo exámenes de ingreso a la educación superior y de evaluar la calidad de la educación en el país. Los resultados de estos exámenes son utilizados por las instituciones de educación superior para tomar decisiones sobre la admisión de estudiantes y para mejorar la calidad de la educación que ofrecen. También se le suelen llamar prueba Saber 11.
 
-instalación
+\#\citar icfes.
+
+En este trabajo usaremos un dataset perteneciente a una librería llamada "saber" desarrollada por Julian Cruz y Daniel. Esta librería nos será de mucha ayuda ya que contiene un número importante de datos que nos permitirán realizar nuestro análisis.
+
+#\\citar Julian Cruz, Daniel
+
+Instalación
 
 ```{r}
 #install.packages('Rtools')
@@ -27,37 +33,94 @@ instalación
 
 ```{r}
 library('saber')
-```
-
-```{r}
-#library(“saber”)
-#SB11_20112 # Tiene alrededor de unos 37 mil datos.
+#SB11_20111 # Tiene alrededor de unos 37 mil datos.
 data(SB11_20112)
-```
-
-```{r}
-
 ```
 
 ## Análisis Descriptivo Básico
 
-EDA - Exploratory data analisys.
+Para ilustrar esta parte del trabajo, utilizaré los resultados en matemáticas de las pruebas del ICFES. Esto se debe a que usar todas las variables de los datos podría dificultar la comprensión de los conceptos que se pretenden transmitir con las visualizaciones. Por esta razón, me centraré en los resultados en matemáticas como ejemplo para ilustrar los conceptos que se abordan en este trabajo.
 
-```{r}
-head(SB11_20112)
+En esta ocasión, las calificaciones van de 0 a 100 puntos y la nota media es: 45.75. Las calificaciones en este rango permiten evaluar el desempeño de los estudiantes en una escala que va desde el insuficiente hasta el sobresaliente.
+
+```{r echo=TRUE}
+mean(SB11_20112$MATEMATICAS_PUNT); median(SB11_20112$MATEMATICAS_PUNT)
 ```
 
-```{r}
+Una idea interesante es revisar en un histograma la densidad de las notas obtenidas en las pruebas del ICFES. Esto nos permitirá entender en qué rango se han dado las calificaciones y cómo se distribuyen en la población de estudiantes que tomó las pruebas. De esta manera, podremos comprender mejor el comportamiento de las notas en matemáticas en estas pruebas y obtener información valiosa para analizar la calidad de las notas del grupo de este periodo.
+
+```{r echo=TRUE}
+hist(SB11_20112$MATEMATICAS_PUNT,prob=T, main = 'Puntación en el Área de Matemáticas', nclass = 35)
+```
+
+De acuerdo con la información del histograma, las notas tienen un comportamiento aproximadamente normal, lo que significa que se distribuyen de manera similar a una curva de campana. Esto significa que la mayoría de las notas se encuentran cerca del valor promedio, y hay pocas notas muy altas o muy bajas en comparación con el resto. Para validar esta idea inicial y comprobar si realmente los datos están distribuidos de manera uniforme entorno a su media, realizaremos un boxplot que nos permite visualizar de una manera diferente los datos y evaluar la distribución de las notas.
+
+```{r echo=TRUE}
+boxplot(SB11_20112$MATEMATICAS_PUNT, horizontal = TRUE)
+```
+
+Como se puede observar en el boxplot, el 50% de los datos están en el intervalo de 45 puntos más o menos 8 puntos. Además, la media y la mediana son iguales en su parte entera, lo que indica que la distribución de las notas es bastante uniforme y no hay una gran desigualdad en el desempeño de los estudiantes. Una medida adicional que podemos usar para evaluar la distribución de los datos es la desviación típica, también conocida como desviación estándar. Esta medida nos permite determinar cuán dispersos están los datos en relación a su media. Revisaremos el valor de la desviación típica para obtener más información sobre la distribución de las notas de matemáticas en las pruebas del ICFES.
+
+```{r echo=TRUE}
+sd(SB11_20112$MATEMATICAS_PUNT); var(SB11_20112$MATEMATICAS_PUNT)
+```
+
+Aunque el 50% de los valores están relativamente cerca a la media, las medidas de desviación estándar y varianza nos permiten entender mejor los valores atípicos y aislados que se mostraron en el boxplot anterior. Estas medidas nos ayudan a identificar los valores que se alejan mucho del promedio y nos permiten determinar cuán dispersos están los datos en relación a su media.
+
+Ahora, revisaremos los valores extremos y cuartiles de las notas de matemáticas en este período del ICFES. Como ya mencionamos, estos valores se visualizaron de manera gráfica en el boxplot que realizamos, pero no se mostró de manera clara dónde se encuentran exactamente estos puntos en el gráfico. Para entender mejor la distribución de los datos, vamos a calcular y analizar estos valores en detalle.
+
+```{r echo=TRUE}
+summary(SB11_20112$MATEMATICAS_PUNT)
+```
+
+De acuerdo con los datos, hay calificaciones extremas en torno a 0 y otras en torno a 102 que podrían estar aumentando significativamente los valores de la varianza y la desviación estándar. Esto indica que hay algunas notas muy bajas y otras muy altas que se alejan mucho del promedio y que podrían estar afectando la distribución de los datos. Al calcular las medidas de dispersión, estos valores extremos pueden tener un gran impacto en el resultado y pueden distorsionar la información que obtenemos sobre el rendimiento de los estudiantes en las pruebas del ICFES. Por esta razón, es importante tener en cuenta estos valores y analizarlos con cuidado al evaluar la calidad de la educación en el campo de las matemáticas, dado que en casos como este cero es probable que haya algún error o que la persona ni siquiera presentó la prueba.
+
+Finalmete
+
+#Voy agregar puntos de media, la muestra que sacamos, de tamaño muestral
+
+#ya escogido, con desviación de la muestra.
+
+#Asi creamos una nube de estimadores.
+
+```{r echo=TRUE}
+iteraciones <- 500
+tamano_muestral <- 27
+
+plot(
+  mean(SB11_20112$MATEMATICAS_PUNT),
+  sd(SB11_20112$MATEMATICAS_PUNT),
+  pch = 20,
+  cex = 4,
+  col = "white"
+)
+
+ 
+for(i in seq_len(iteraciones)){
+  points(
+    mean(sample(SB11_20112$MATEMATICAS_PUNT, tamano_muestral)),
+    sd(sample(SB11_20112$MATEMATICAS_PUNT, tamano_muestral)),
+    pch = 20
+    
+  )
+}
+
+points(
+  mean(SB11_20112$MATEMATICAS_PUNT),
+  sd(SB11_20112$MATEMATICAS_PUNT),
+  pch = 18,
+  cex = 4,
+  col = 'red'
+)
+```
+
+```{r echo=TRUE}
 
 ```
 
--medidas de resumen (frecuencias, media, mediana, cuartiles, varianza o desviación típica, coeficiente de variación)
+```{r echo=TRUE}
 
-apoyo visual: histogramas, gráficos de caja
-
-\- funciones de R a usar, y páginas de referencia en apuntes (en algunos casos pongo solo la primera en que aparecen):
-
-hist(6, tema 1) --- mean (14, 1) --- median (15, 1) --- quantile, summary (17, 1) --- boxplot (19, 1) --- var, sd (23, 1)
+```
 
 ## Inferencia
 
