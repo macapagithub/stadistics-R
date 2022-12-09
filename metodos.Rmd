@@ -3,39 +3,11 @@ title: "Proyecto Médodos"
 author: "Mauricio Caicedo Palacio"
 date: "2022-12-06"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
+editor_options: 
+  chunk_output_type: console
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
-
-Ejemplos:
-
--   1
-
--   2
 
 ## Introducción
 
@@ -44,29 +16,85 @@ Los examenes Saber11 son los examenes que se usan en Colombia alfinaliar la educ
 instalación
 
 ```{r}
-install.packages('Rtools')
-library('Rtools')
-```
-
-``` {r}install.packages('devtools')}
+#install.packages('Rtools')
+#library('Rtools')
 ```
 
 ```{r}
-install.packages('devtools')
-devtools::install_github(“https://github.com/nebulae-co/saber”,force = T)
+#install.packages('devtools')
+#devtools::install_github('https://github.com/nebulae-co/saber',force =T)
+```
 
+```{r}
 library('saber')
 ```
 
 ```{r}
 #library(“saber”)
-#data(“SB11_20112”)
+#SB11_20112 # Tiene alrededor de unos 37 mil datos.
+data(SB11_20112)
+```
+
+```{r}
+
 ```
 
 ## Análisis Descriptivo Básico
 
--medidas de resumen (frecuencias, media, mediana, cuartiles, varianza o desviación típica, coeficiente de          variación)
+EDA - Exploratory data analisys.
 
-apoyo visual: histogramas, gráficos de caja - funciones de R a usar, y páginas de referencia en apuntes (en algunos casos pongo solo la primera en que aparecen):
+```{r}
+head(SB11_20112)
+```
+
+```{r}
+
+```
+
+-medidas de resumen (frecuencias, media, mediana, cuartiles, varianza o desviación típica, coeficiente de variación)
+
+apoyo visual: histogramas, gráficos de caja
+
+\- funciones de R a usar, y páginas de referencia en apuntes (en algunos casos pongo solo la primera en que aparecen):
 
 hist(6, tema 1) --- mean (14, 1) --- median (15, 1) --- quantile, summary (17, 1) --- boxplot (19, 1) --- var, sd (23, 1)
+
+## Inferencia
+
+-   estimaciones y contrastes sobre la media (tal vez sobre la mediana)
+
+-contrastes de igualdad de medias de variables relacionadas (tal vez una misma variable estudiada por grupos según lo que valga un factor). Puede ser conveniente considerar contrastes de normalidad, y contrastes de igualdad de varianzas.
+
+-   estimaciones sobre la varianza
+
+-   estimaciones y contrastes sobre proporciones
+
+-   en R:
+
+-   t.test, [conf.level, var.equal, paired, \$conf, \$p.value] (8, 4) a (20, 4)
+
+-   var.test (14, 4) --- VarCI (13, 4)
+
+-   prop.test[correct=F] (16,4) y (23,4)
+
+-   lillie.test(28,4) \-- qqnorm (10,3) --- wilcox.test (30,4)
+
+## Regresión Lineal
+
+-   preferentemente múltiple, con predicciones puntuales, intervalos de confianza de parámetros y predicciones y contrastes del efecto marginal y conjunto
+
+-   aunque sea múltiple, elegid dos variables para representar la recta de         regresión y considerar la regresión simple, con el diagrama de dispersión;
+
+si el ajuste múltiple es muy bueno seguramente mejorará sustancialmente al mejor de los ajustes simples.
+
+-   en R:
+
+-   lm(Y\~X1+...+Xk) (5,5)
+
+coef, residuals, sigma, model.matrix, fitted, abline (2,5)
+
+summary [\$cov.unscaled, \$r.squared] (7,5) cor (10,5)
+
+anova y Anova [car] (15,5) y (18,5)
+
+predict(20,5)
