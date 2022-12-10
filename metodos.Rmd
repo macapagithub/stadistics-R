@@ -3,9 +3,10 @@ title: "Proyecto Médodos"
 author: "Mauricio Caicedo Palacio"
 date: "2022-12-06"
 output:
-  html_document: default
   pdf_document: default
-editor_options: 
+  html_document: default
+  word_document: default
+editor_options:
   chunk_output_type: inline
 ---
 
@@ -13,13 +14,9 @@ editor_options:
 
 Los datos que se usaran en este trabajo, son los resultados de las pruebas ICFES, que se realizaron en el segundo semestre de 2011. El ICFES es un acrónimo que se refiere a Instituto Colombiano para la Evaluación de la Educación Superior. Se trata de una entidad gubernamental de Colombia encargada de llevar a cabo exámenes de ingreso a la educación superior y de evaluar la calidad de la educación en el país. Los resultados de estos exámenes son utilizados por las instituciones de educación superior para tomar decisiones sobre la admisión de estudiantes y para mejorar la calidad de la educación que ofrecen. También se le suelen llamar prueba Saber 11.
 
-\#\citar icfes.
-
 En este trabajo usaremos un dataset perteneciente a una librería llamada "saber" desarrollada por Julian Cruz y Daniel. Esta librería nos será de mucha ayuda ya que contiene un número importante de datos que nos permitirán realizar nuestro análisis.
 
-#\\citar Julian Cruz, Daniel
-
-Instalación
+El código lo realizaremos en R usando el IDE. Instalamos y cargamos la liberia y datos:
 
 ```{r}
 #install.packages('Rtools')
@@ -112,7 +109,7 @@ Como suponíamos, la nube de puntos importantes es entorno a la media.
 
 ## Inferencia
 
-En esta parte vamos a realizar estimación de parametro, sobre la media.
+En esta parte vamos a realizar estimación de parámetro, sobre la media.
 
 ```{r echo=TRUE}
 
@@ -136,13 +133,11 @@ qqnorm(SB11_20112$MATEMATICAS_PUNT)
 
 -   estimaciones y contrastes sobre proporciones
 
--   
-
 -   t.test, [conf.level, var.equal, paired, \$conf, \$p.value] (8, 4) a (20, 4)
 
 -   var.test (14, 4) --- VarCI (13, 4)
 
--   
+Ok.
 
 ## Regresión Lineal
 
@@ -167,6 +162,7 @@ Finalmente, llevaremos a cabo un análisis de regresión múltiple y uno de regr
 -   "MATEMATICAS_PUNT": Puntaje en matemáticas.
 
 ```{r echo=TRUE}
+#Creamos un dataframe con las variables que vamos a usar.
 df <- data.frame (
   X1 <- SB11_20112$ECON_PERSONAS_HOGAR,
   X2 <- SB11_20112$ECON_CUARTOS,
@@ -183,8 +179,7 @@ df <- data.frame (
 ```
 
 ```{r echo=TRUE}
-
-
+#Creamos la regresión linea.
 model <- lm(Y ~., data = df)
 ```
 
@@ -192,47 +187,94 @@ model <- lm(Y ~., data = df)
 summary(model)
 ```
 
+Teniendo en cuenta que 'R-squared' y el 'Adjusted R-squared' son medidadas para evaluar la precisión del modelo de regresión lineal. En este caso, ambos tienen un valor de 1, es decir indica un ajuste perfecto del modelo a nuestros datos. Sin embargo, este modelo es demasiado perfecto, lo que puede ser un indicio de que está sobreajustando los datos y no será capaz de generalizar bien a datos nuevos. Por lo tanto, examinaremos el modelo con más detalle, analizaremos un poco más la relación de las otras variables con la variable objetivo. Podemos realizar una regresión con una o dos variables y ver los resultados del modelo.
+
+Esto nos ayudará a entender que está pasando en el modelado y si el modelo es el adecuado para nuestro problema.
+
 ```{r echo=TRUE}
+#pairs(df,
+#      upper.panel = NULL
+#      diag.panel = panel.hist)
+```
+
+Realizar una gráfica de correlación es muy poco útil, aunque podría intentarse, ya que dada la cantidad de datos que hay, solo se ven nubes de puntos, lo cual poco nos deja para interpretación.
+
+```{r echo=TRUE}
+#Eliminamos todos los datos que tienen na en nuestro df.
 df2 <- na.omit(df)
 ```
 
 ```{r echo=TRUE}
-model3 <- lm(Y~X8+X9, data = df)
+cor(df2)
 ```
 
-```{r}
-summary(model3)
+En general, la correlación entre las variables es muy baja. Esto es positivo, ya que nos permite descartar la idea de que hay información redundante en nuestro modelo inicial. Ahora podemos usar una regresión con dos variables independientes para intentar predecir nuestra nota.
+
+```{r echo=TRUE}
+model2 <- lm(Y~X8+X9, data = df)
 ```
 
 ```{r echo=TRUE}
+summary(model2)
+```
+
+```{r echo=TRUE}
+summary(model2)$r.squared; model2$coefficients
+```
+
+En este caso, el resumen de los datos nos muestra que a pesar de que los coeficientes beta de las variables seleccionadas son muy relevantes para ajustar el modelo, el modelo generado tiene una precisión muy baja, ya que su R-cuadrado y su R-cuadrado ajustado no superan el 0.075. Esto indica que el modelo no es muy eficiente en la predicción de las notas, y podría ser necesario explorar otras variables o técnicas de modelado para mejorar su rendimiento, incluso modelos más sofisticados.
+
+```{r echo=TRUE}
+anova(model2)
+```
+
+Aún más, este resultado de ANOVA indica que las variables X8 y X9 tienen un efecto significativo en la respuesta Y. Esto se confirma por los valores de F y Pr(\>F) obtenidos en la tabla, que son cero y sugieren una alta significancia estadística. Sin embargo, también se puede observar que hay un alto residuo en el modelo, lo que indica que hay una gran cantidad de variabilidad en los datos que no se explica por el modelo. Esto puede deberse a la presencia de otros factores que influyen en la respuesta Y y que no se han considerado en el análisis, como se menciono en el párrafo anterior.
+
+```{r echo=TRUE}
+anova(model)
+```
+
+Aunque en el anova realizado al modelo original, con todas las variables, tiene un ajute perfecto y un residuo demasiado bajo, como ya se había dicho es muy poco confiable, tal es así que R, lanza una advertencia hacia lo poco confiable que podría ser.
+
+Finalmente realizaremos una regresión lineal simple y posteriormente realizaremos una gráfica que nos va a permitir ver de manera visual nuestros datos.
+
+```{r echo=TRUE}
+plot(X9,Y,col='blue',type='p',pch=19,cex=0.7)
+mod<-lm(Y~X9)
+abline(mod,col='magenta')
+points(mean(X9),mean(Y),cex=0.7,col='blue')
+text(173.5,63,expression(paste("(",bar(X9),",",bar(Y),")",sep="")),cex=0.7)
+segments(X9,Y,X9,fitted(mod),lty='dotted',col='blue',lwd=0.5)
+b0<-round(coef(mod)[1],2)
+#text(160,85,expression(paste(hat(beta)[0],"=",-84.05,sep="")),pos=1,cex=1)
+#text(160,80,expression(paste(hat(beta)[1],"=",0.86,sep="")),pos=1,cex=1)
+
+```
+
+Como se esperaba, la recta de regresión no es el modelo más adecuado para estos datos, como se puede observar en la gráfica. Por lo tanto, sus resultados deberían ser consistentes con lo que se ve en la gráfica.
+
+```{r echo=TRUE}
+anova(mod)
 
 ```
 
 ```{r echo=TRUE}
-#model.matrix(model)
+hist(fitted(mod))
 ```
 
-    pares. paneles (df)
+Como el modelo lineal no es suficientemente preciso para predecir los resultados en matemáticas de cada persona, se utilizan dos valores de referencia: el 43 para aquellos que no tienen internet y el 49 para aquellos que sí tienen internet. Esto claramente muestra que la falta de variables en el modelo genera un gran sesgo y un alto residuo. Una de las principales debilidades del modelo es que, aunque parece haber una pequeña mejora en los resultados de matemáticas del ICFES en aquellos casos en los que las personas tienen internet (en promedio, 6 puntos más), el modelo no es capaz de capturar adecuadamente esta relación y por lo tanto no es confiable para hacer predicciones precisas, como se esperaba.
 
-    -   preferentemente múltiple, con predicciones puntuales, intervalos de confianza de parámetros y predicciones y contrastes del efecto marginal y conjunto
+```{r echo=TRUE}
+hist(model.matrix(mod))
+```
 
--   aunque sea múltiple, elegid dos variables para representar la recta de regresión y considerar la regresión simple, con el diagrama de dispersión;
+Como era de esperarse, la gráfica refleja los valores que toma la variable, cero en caso de no tener internet y uno en caso de tener.
 
-si el ajuste múltiple es muy bueno seguramente mejorará sustancialmente al mejor de los ajustes simples.
+```{r echo=TRUE}
+plot(predict(mod,data.frame(1)))
+```
 
--   en R:
-
--   lm(Y\~X1+...+Xk) (5,5)
-
-coef, residuals, sigma, model.matrix, fitted, abline (2,5)
-
-summary [\$cov.unscaled, \$r.squared] (7,5) cor (10,5)
-
-anova y Anova [car] (15,5) y (18,5)
-
-predict(20,5)
-
-Bien aquí todo debería estar bien.
+Como se ha reiterado este modelo solo puede predecir dos valores.
 
 ```{r echo=TRUE}
 plot(SB11_20112$MATEMATICAS_PUNT ~ SB11_20112$ECON_PERSONAS_HOGAR)
@@ -245,3 +287,25 @@ plot(SB11_20112$MATEMATICAS_PUNT ~ SB11_20112$ECON_CUARTOS)
 ```{r}
 plot(SB11_20112$MATEMATICAS_PUNT ~ SB11_20112$ECON_SN_AUTOMOVIL)
 ```
+
+Si se fija una variable y un valor de esa variable, es posible observar una distribución normal de los datos con una ligera inclinación hacia aquellos con mejores condiciones económicas, como ya se mencionó en el caso del acceso a internet. En ese sentido, estos datos podrían ser una buena opción para predecir el puntaje en matemáticas en las pruebas, pero requerirían un modelo más sofisticado para hacer predicciones precisas. Como se ha mencionado anteriormente, el modelo lineal no es suficientemente preciso y podría ser necesario explorar otras técnicas de modelado para mejorar su rendimiento.
+
+## Biografía
+
+[1] W. Larry, *All of Statistics*, 1st ed. Springer
+Science, 2004.
+
+[2] R Core Team, \'R: A Language and Environment for Statistical
+Computing\'. Vienna, Austria, 2018. [Online]. Available:
+<https://www.R-project.org/>
+
+[3] Rs. Team, \'RStudio: Integrated Development Environment for
+R\'. RStudio, Inc., 2022.
+
+[4] A. C. J. Luis, *Notas de Clase*. 2020.
+
+[5] ICFES, \'[https://www.icfes.gov.co/\',](https://www.icfes.gov.co/’,) Dec. 07, 2022.
+
+[6] Cruz Julian and Daniel, \'[https://github.com/nebulae-co/saber\',](https://github.com/nebulae-co/saber’,) Aug. 27, 2015.
+
+ 
