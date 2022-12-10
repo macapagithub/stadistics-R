@@ -75,17 +75,11 @@ summary(SB11_20112$MATEMATICAS_PUNT)
 
 De acuerdo con los datos, hay calificaciones extremas en torno a 0 y otras en torno a 102 que podrían estar aumentando significativamente los valores de la varianza y la desviación estándar. Esto indica que hay algunas notas muy bajas y otras muy altas que se alejan mucho del promedio y que podrían estar afectando la distribución de los datos. Al calcular las medidas de dispersión, estos valores extremos pueden tener un gran impacto en el resultado y pueden distorsionar la información que obtenemos sobre el rendimiento de los estudiantes en las pruebas del ICFES. Por esta razón, es importante tener en cuenta estos valores y analizarlos con cuidado al evaluar la calidad de la educación en el campo de las matemáticas, dado que en casos como este cero es probable que haya algún error o que la persona ni siquiera presentó la prueba.
 
-Finalmete
-
-#Voy agregar puntos de media, la muestra que sacamos, de tamaño muestral
-
-#ya escogido, con desviación de la muestra.
-
-#Asi creamos una nube de estimadores.
+Por último, realizaremos un muestreo de los datos y los visualizaremos con el fin de confirmar nuestra hipótesis sobre la distribución de los datos en relación a su media.
 
 ```{r echo=TRUE}
-iteraciones <- 500
-tamano_muestral <- 27
+iteraciones <- 500 #La cantidad de la muestra es indiscrininada.
+tamano_muestral <- 30 #El tamaño de la muestra es indiscriminada.
 
 plot(
   mean(SB11_20112$MATEMATICAS_PUNT),
@@ -114,39 +108,115 @@ points(
 )
 ```
 
-```{r echo=TRUE}
-
-```
-
-```{r echo=TRUE}
-
-```
+Como suponíamos, la nube de puntos importantes es entorno a la media.
 
 ## Inferencia
+
+En esta parte vamos a realizar estimación de parametro, sobre la media.
+
+```{r echo=TRUE}
+
+```
+
+```{r echo=TRUE}
+qqnorm(SB11_20112$MATEMATICAS_PUNT)
+```
 
 -   estimaciones y contrastes sobre la media (tal vez sobre la mediana)
 
 -contrastes de igualdad de medias de variables relacionadas (tal vez una misma variable estudiada por grupos según lo que valga un factor). Puede ser conveniente considerar contrastes de normalidad, y contrastes de igualdad de varianzas.
 
+-   prop.test[correct=F] (16,4) y (23,4)
+
+-   lillie.test(28,4) \-- qqnorm (10,3) --- wilcox.test (30,4)
+
+<!-- -->
+
 -   estimaciones sobre la varianza
 
 -   estimaciones y contrastes sobre proporciones
 
--   en R:
+-   
 
 -   t.test, [conf.level, var.equal, paired, \$conf, \$p.value] (8, 4) a (20, 4)
 
 -   var.test (14, 4) --- VarCI (13, 4)
 
--   prop.test[correct=F] (16,4) y (23,4)
-
--   lillie.test(28,4) \-- qqnorm (10,3) --- wilcox.test (30,4)
+-   
 
 ## Regresión Lineal
 
--   preferentemente múltiple, con predicciones puntuales, intervalos de confianza de parámetros y predicciones y contrastes del efecto marginal y conjunto
+Finalmente, llevaremos a cabo un análisis de regresión múltiple y uno de regresión simple. Con el segundo podremos visualizar la recta de regresión. Con esto, vamos a predecir el puntaje del ICFES en matemáticas a partir de variables socioeconómicas. Las variables que usaremos son las siguientes:
 
--   aunque sea múltiple, elegid dos variables para representar la recta de         regresión y considerar la regresión simple, con el diagrama de dispersión;
+-   "ECON_PERSONAS_HOGAR": Cuantas personas viven en el hogar.
+
+-   "ECON_CUARTOS": Número de cuartos en el hogar.
+
+-   "ECON_SN_LAVADORA": Si tiene lavadora.
+
+-   "ECON_SN_NEVERA": Si tiene nevera.
+
+-   "ECON_SN_HORNO": Si tiene horno.
+
+-   "ECON_SN_DVD": Si tiene DVD.
+
+-   "ECON_SN_MICROHONDAS": Si tiene microondas
+
+-   "ECON_SN_AUTOMOVIL": Si tiene automóvil.
+
+-   "MATEMATICAS_PUNT": Puntaje en matemáticas.
+
+```{r echo=TRUE}
+df <- data.frame (
+  X1 <- SB11_20112$ECON_PERSONAS_HOGAR,
+  X2 <- SB11_20112$ECON_CUARTOS,
+  X3 <- SB11_20112$ECON_SN_LAVADORA,
+  X4 <- SB11_20112$ECON_SN_NEVERA,
+  X5 <- SB11_20112$ECON_SN_HORNO,
+  X6 <- SB11_20112$ECON_SN_DVD,
+  X7 <- SB11_20112$ECON_SN_MICROHONDAS,
+  X8 <- SB11_20112$ECON_SN_AUTOMOVI,
+  X9 <- SB11_20112$ECON_SN_INTERNET,
+  Y <- SB11_20112$MATEMATICAS_PUNT
+)
+#df2 <- na.omit(df)
+```
+
+```{r echo=TRUE}
+
+
+model <- lm(Y ~., data = df)
+```
+
+```{r echo=TRUE}
+summary(model)
+```
+
+```{r echo=TRUE}
+df2 <- na.omit(df)
+```
+
+```{r echo=TRUE}
+model3 <- lm(Y~X8+X9, data = df)
+```
+
+```{r}
+summary(model3)
+```
+
+```{r echo=TRUE}
+
+```
+
+```{r echo=TRUE}
+#model.matrix(model)
+```
+
+    pares. paneles (df)
+
+    -   preferentemente múltiple, con predicciones puntuales, intervalos de confianza de parámetros y predicciones y contrastes del efecto marginal y conjunto
+
+-   aunque sea múltiple, elegid dos variables para representar la recta de regresión y considerar la regresión simple, con el diagrama de dispersión;
 
 si el ajuste múltiple es muy bueno seguramente mejorará sustancialmente al mejor de los ajustes simples.
 
@@ -161,3 +231,17 @@ summary [\$cov.unscaled, \$r.squared] (7,5) cor (10,5)
 anova y Anova [car] (15,5) y (18,5)
 
 predict(20,5)
+
+Bien aquí todo debería estar bien.
+
+```{r echo=TRUE}
+plot(SB11_20112$MATEMATICAS_PUNT ~ SB11_20112$ECON_PERSONAS_HOGAR)
+```
+
+```{r echo=TRUE}
+plot(SB11_20112$MATEMATICAS_PUNT ~ SB11_20112$ECON_CUARTOS)
+```
+
+```{r}
+plot(SB11_20112$MATEMATICAS_PUNT ~ SB11_20112$ECON_SN_AUTOMOVIL)
+```
