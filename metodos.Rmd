@@ -72,10 +72,33 @@ summary(SB11_20112$MATEMATICAS_PUNT)
 
 De acuerdo con los datos, hay calificaciones extremas en torno a 0 y otras en torno a 102 que podrían estar aumentando significativamente los valores de la varianza y la desviación estándar. Esto indica que hay algunas notas muy bajas y otras muy altas que se alejan mucho del promedio y que podrían estar afectando la distribución de los datos. Al calcular las medidas de dispersión, estos valores extremos pueden tener un gran impacto en el resultado y pueden distorsionar la información que obtenemos sobre el rendimiento de los estudiantes en las pruebas del ICFES. Por esta razón, es importante tener en cuenta estos valores y analizarlos con cuidado al evaluar la calidad de la educación en el campo de las matemáticas, dado que en casos como este cero es probable que haya algún error o que la persona ni siquiera presentó la prueba.
 
-Por último, realizaremos un muestreo de los datos y los visualizaremos con el fin de confirmar nuestra hipótesis sobre la distribución de los datos en relación a su media.
+## Inferencia
+
+En esta parte, vamos a realizar una estimación de parámetros en torno a la media de las notas de lenguaje en la prueba ICFES. La nota media de lenguaje en la prueba ICFES es un indicador importante que nos permite conocer el rendimiento general de los estudiantes en esta materia. Vamos a realizar una estimación precisa de la media, como sigue:
 
 ```{r echo=TRUE}
-iteraciones <- 500 #La cantidad de la muestra es indiscrininada.
+mean(SB11_20112$LENGUAJE_PUNT); sum(SB11_20112$LENGUAJE_PUNT)/length(SB11_20112$LENGUAJE_PUNT)
+```
+
+Que ambos casos es 45.79. Ya sea usando la función 'mean' de R o sumando todos los valores y dividiendo por la cantidad de datos. Datos que al igual que el puntaje de matemáticas parecen tener una distribución normal.
+
+```{r echo=TRUE}
+hist(SB11_20112$LENGUAJE_PUNT)
+```
+
+Veamos si el qqplot nos permite entender un poco mejor los datos de lenguaje, con la idea de que tienen una distribución normal.
+
+```{r echo=TRUE}
+qqnorm(SB11_20112$LENGUAJE_PUNT)
+```
+
+En la parte central, cercana a la media, parece que se asemeja a una distribución normal. Pero, se tienen saltos en las colas, cercanos a valores muy altos o muy bajos, se desdibuja la continuidad de esa normalidad. Como ya se expreso en el caso de matemáticas esos valores extremos, 0 y 100, podrían ser errores a la hora de realizar el computo de las pruebas o, personas que se les evaluó con cero, a pesar de no presentar el examen.
+
+Vamos realizar un muestreo de los datos y los visualizaremos con el fin de adquirir más información sobre la hipótesis de normalidad de la distribución de las notas en el área de lenguaje en relación a su media.
+
+```{r echo=TRUE}
+
+iteraciones <- 150 #La cantidad de la muestra es indiscrininada.
 tamano_muestral <- 30 #El tamaño de la muestra es indiscriminada.
 
 plot(
@@ -105,39 +128,127 @@ points(
 )
 ```
 
-Como suponíamos, la nube de puntos importantes es entorno a la media.
+Como vemos, la nube de puntos importantes es entorno a la media. Juguemos un poco con el tamaño de la muestra y veamos que pasa.
 
-## Inferencia
+```{r echo=TRUE}
+iteraciones <- 150 #La cantidad de la muestra es indiscrininada.
+tamano_muestral <- 150 #El tamaño de la muestra es indiscriminada.
 
-En esta parte vamos a realizar estimación de parámetro, sobre la media.
+plot(
+  mean(SB11_20112$MATEMATICAS_PUNT),
+  sd(SB11_20112$MATEMATICAS_PUNT),
+  pch = 20,
+  cex = 4,
+  col = "white"
+)
+
+ 
+for(i in seq_len(iteraciones)){
+  points(
+    mean(sample(SB11_20112$MATEMATICAS_PUNT, tamano_muestral)),
+    sd(sample(SB11_20112$MATEMATICAS_PUNT, tamano_muestral)),
+    pch = 20
+    
+  )
+}
+
+points(
+  mean(SB11_20112$MATEMATICAS_PUNT),
+  sd(SB11_20112$MATEMATICAS_PUNT),
+  pch = 18,
+  cex = 4,
+  col = 'red'
+)
+```
+
+Como se muestra la gráfica, los datos convergen a la media poblacional. Es decir, a medida que aumentemos el tamaño de la muestra, nuestras medias muestrales convergen a la media poblacional.
+
+Para realizar un contraste de la media del ICFES en lenguaje, utilizaremos el test de t de Student para comparar la media de una muestra con la media poblacional esperada. Aún más vamos a separar a las personas que tienen carro y los que no tienen carro y, ver si esto tiene alguna incidencia a la hora presentar la prueba.
 
 ```{r echo=TRUE}
 
+tamano_muestral <- 3000
+iteraciones <- 100
+
+
+pobla_A <- SB11_20112$LENGUAJE_PUNT[SB11_20112$ECON_SN_AUTOMOVIL == 0]
+pobla_B <- SB11_20112$LENGUAJE_PUNT[SB11_20112$ECON_SN_AUTOMOVIL == 1]
+media_pob_A <- mean(pobla_A, na.rm = TRUE)
+media_pob_B <- mean(pobla_B, na.rm = TRUE)
+
+plot(media_pob_A, media_pob_B, col = 4, pch = 20)
+abline(0,1)
+
+pval_A <- vector()
+pval_B <- vector()
+
+for(i in seq_len(iteraciones)){
+  
+  muestra <- sample(seq_len(nrow(SB11_20112)), tamano_muestral)
+  
+  cuales_A <- seq_len(nrow(SB11_20112)) %in% muestra & SB11_20112$ECON_SN_AUTOMOVIL == 0
+  muestra_A <- SB11_20112$LENGUAJE_PUNT[cuales_A]
+  
+  cuales_B <- seq_len(nrow(SB11_20112)) %in% muestra & SB11_20112$ECON_SN_AUTOMOVIL == 1
+  muestra_B <- SB11_20112$LENGUAJE_PUNT[cuales_B]
+  
+  media_muestra_A <- mean(muestra_A, na.rm = TRUE)
+  t_test_A <- t.test(muestra_A)
+  intervalo_A <- t_test_A$conf.int
+  LI_A <- min(intervalo_A)
+  LS_A <- max(intervalo_A)
+  
+  media_muestra_B <- mean(muestra_B, na.rm = TRUE)
+  t_test_B <- t.test(muestra_B, na.rm = TRUE)
+  intervalo_B <- t_test_B$conf.int
+  LI_B <- min(intervalo_B)
+  LS_B <- max(intervalo_B)
+  
+  pval_A[i] <- t_test_A$p.value
+  pval_B[i] <- t_test_B$p.value
+  
+  # points(media_muestra_A, media_muestra_B, col = 2, pch = 20)
+  rect(LI_A, LI_B, LS_A, LS_B)
+  
+}
+
+points(media_pob_A, media_pob_B, col = 4, pch = 20, cex = 2)
 ```
+
+La recta en la gráfica es la recta y = x, el punto azul la media, lo que esto nos muestra es que en general si hay una mejora en lenguaje a la hora de presentar la prueba si tienes un carro. Los rectángulos en la gráfica son los intervalos de confianza de la media para cada una de las muestras con la cantidad de iteraciones tomadas.
 
 ```{r echo=TRUE}
-qqnorm(SB11_20112$MATEMATICAS_PUNT)
+mean(pval_A); mean(pval_B); max(pval_A); max(pval_B)
 ```
 
--   estimaciones y contrastes sobre la media (tal vez sobre la mediana)
+Note que en cada uno de los casos, el valor máximo de los p-valores es cero. Es decir, que no hay información significativa, desde el punto de vista estadístico, para no decir que los intervalo de confianza están bien y que finalmente nos permite concluir, que hay una mejora en las resultados de lenguaje de pruebas ICFES si una persona tiene vehículo.
 
--contrastes de igualdad de medias de variables relacionadas (tal vez una misma variable estudiada por grupos según lo que valga un factor). Puede ser conveniente considerar contrastes de normalidad, y contrastes de igualdad de varianzas.
+Veamos que se tiene de las varianzas de ambas poblaciones:
 
--   prop.test[correct=F] (16,4) y (23,4)
+```{r echo=TRUE}
+var.test(pobla_A, pobla_B)
+```
 
--   lillie.test(28,4) \-- qqnorm (10,3) --- wilcox.test (30,4)
+Usamos el F-test para comparar las dos varianzas y determinar si hay una diferencia significativa entre ellas. En este caso, después de realizar la prueba F en los datos de las dos poblaciones, pobla_A y pobla_B, y se ha obtenido un valor F de 0.95803.
 
-<!-- -->
+El valor p es menor que 2.2e-16, lo que indica que hay una diferencia significativa entre las varianzas de los dos grupos de datos. Además, el intervalo de confianza del 95% para la razón de varianzas está entre 0.9494679 y 0.9666296, lo que confirma que las varianzas de las dos poblaciones son diferentes en un 95% de confianza. Por lo tanto, se puede concluir que la hipótesis alternativa de que la razón de varianzas verdadera no es igual a 1 es correcta.
 
--   estimaciones sobre la varianza
+Por otra lado, ¿que podemos afirmar de la normalidad de estás muestras?. Realizamos un test de Lilliefors, que nos ayudara a dar respuesta a esto.
 
--   estimaciones y contrastes sobre proporciones
+```{r echo=TRUE}
+#install.packages("nortest")
+library(nortest)
+lillie.test(pobla_A)
+```
 
--   t.test, [conf.level, var.equal, paired, \$conf, \$p.value] (8, 4) a (20, 4)
+Dado que el p-valor es aproimadamente cero, lo que nos dice que hay una diferencia significativa entre como se distribuyen los datos en está muestra y una distribución normal. Es decir, los datos de la pobla_A no siguen una distribución normal.
+Ahora, pobla_A que es una muestra de las notas, de las personas que presentaron el examen ICFES, muestra que tiene la condición que estás personas no tiene vehículo. Si la muestra no tiene una distribución normal, lo tendrá la población?
 
--   var.test (14, 4) --- VarCI (13, 4)
+```{r echo=TRUE}
+ wilcox.test(SB11_20112$LENGUAJE_PUNT)
+```
 
-Ok.
+Lo que nos dice el test de Kolmogorov-Smirnov, en este caso, es que no. Tenemos un p-valor muy cercano a cero lo que nos dice la hipótesis nula de la supuesta normalidad de los datos es rechazada. Es decir, las muestras no son normales, porque en general la población no es normal.
 
 ## Regresión Lineal
 
@@ -290,7 +401,7 @@ plot(SB11_20112$MATEMATICAS_PUNT ~ SB11_20112$ECON_SN_AUTOMOVIL)
 
 Si se fija una variable y un valor de esa variable, es posible observar una distribución normal de los datos con una ligera inclinación hacia aquellos con mejores condiciones económicas, como ya se mencionó en el caso del acceso a internet. En ese sentido, estos datos podrían ser una buena opción para predecir el puntaje en matemáticas en las pruebas, pero requerirían un modelo más sofisticado para hacer predicciones precisas. Como se ha mencionado anteriormente, el modelo lineal no es suficientemente preciso y podría ser necesario explorar otras técnicas de modelado para mejorar su rendimiento.
 
-## Biografía
+## Bibliografía
 
 [1] W. Larry, *All of Statistics*, 1st ed. Springer
 Science, 2004.
@@ -307,5 +418,3 @@ R\'. RStudio, Inc., 2022.
 [5] ICFES, \'[https://www.icfes.gov.co/\',](https://www.icfes.gov.co/’,) Dec. 07, 2022.
 
 [6] Cruz Julian and Daniel, \'[https://github.com/nebulae-co/saber\',](https://github.com/nebulae-co/saber’,) Aug. 27, 2015.
-
- 
