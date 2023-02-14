@@ -3,8 +3,8 @@ title: "Proyecto Médodos"
 author: "Mauricio Caicedo Palacio"
 date: "2022-12-06"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
   word_document: default
 editor_options:
   chunk_output_type: inline
