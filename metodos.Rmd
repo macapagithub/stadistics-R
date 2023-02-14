@@ -3,8 +3,8 @@ title: "Proyecto Médodos"
 author: "Mauricio Caicedo Palacio"
 date: "2022-12-06"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
   word_document: default
 editor_options:
   chunk_output_type: inline
@@ -14,9 +14,9 @@ editor_options:
 
 Los datos que se usaran en este trabajo, son los resultados de las pruebas ICFES, que se realizaron en el segundo semestre de 2011. El ICFES es un acrónimo que se refiere a Instituto Colombiano para la Evaluación de la Educación Superior. Se trata de una entidad gubernamental de Colombia encargada de llevar a cabo exámenes de ingreso a la educación superior y de evaluar la calidad de la educación en el país. Los resultados de estos exámenes son utilizados por las instituciones de educación superior para tomar decisiones sobre la admisión de estudiantes y para mejorar la calidad de la educación que ofrecen. También se le suelen llamar prueba Saber 11.
 
-En este trabajo usaremos un dataset perteneciente a una librería llamada "saber" desarrollada por Julian Cruz y Daniel. Esta librería nos será de mucha ayuda ya que contiene un número importante de datos que nos permitirán realizar nuestro análisis.
+En este trabajo usaremos un dataset perteneciente a una librería llamada "saber" desarrollada por Julian Cruz y Daniel. Esta librería nos será de mucha ayuda porque contiene un número importante de datos que nos permitirán realizar nuestro análisis.
 
-El código lo realizaremos en R usando el IDE. Instalamos y cargamos la liberia y datos:
+El código lo realizaremos en R usando el IDE. Instalamos y cargamos la librería y datos:
 
 ```{r}
 #install.packages('Rtools')
@@ -50,19 +50,19 @@ Una idea interesante es revisar en un histograma la densidad de las notas obteni
 hist(SB11_20112$MATEMATICAS_PUNT,prob=T, main = 'Puntación en el Área de Matemáticas', nclass = 35)
 ```
 
-De acuerdo con la información del histograma, las notas tienen un comportamiento aproximadamente normal, lo que significa que se distribuyen de manera similar a una curva de campana. Esto significa que la mayoría de las notas se encuentran cerca del valor promedio, y hay pocas notas muy altas o muy bajas en comparación con el resto. Para validar esta idea inicial y comprobar si realmente los datos están distribuidos de manera uniforme entorno a su media, realizaremos un boxplot que nos permite visualizar de una manera diferente los datos y evaluar la distribución de las notas.
+De acuerdo con la información del histograma, las notas tienen un comportamiento aproximadamente normal, lo que significa que se distribuyen de manera similar a una curva de campana. Esto significa que la mayoría de las notas se encuentran cerca del valor promedio, y hay pocas notas muy altas o muy bajas en comparación con el resto. Para validar esta idea inicial y comprobar si realmente los datos están distribuidos de manera uniforme en torno a su media, realizaremos un boxplot que nos permite visualizar de una manera diferente los datos y evaluar la distribución de las notas.
 
 ```{r echo=TRUE}
 boxplot(SB11_20112$MATEMATICAS_PUNT, horizontal = TRUE)
 ```
 
-Como se puede observar en el boxplot, el 50% de los datos están en el intervalo de 45 puntos más o menos 8 puntos. Además, la media y la mediana son iguales en su parte entera, lo que indica que la distribución de las notas es bastante uniforme y no hay una gran desigualdad en el desempeño de los estudiantes. Una medida adicional que podemos usar para evaluar la distribución de los datos es la desviación típica, también conocida como desviación estándar. Esta medida nos permite determinar cuán dispersos están los datos en relación a su media. Revisaremos el valor de la desviación típica para obtener más información sobre la distribución de las notas de matemáticas en las pruebas del ICFES.
+Como se puede observar en el boxplot, el 50% de los datos están en el intervalo de 45 puntos, más o menos 8 puntos. Además, la media y la mediana son iguales en su parte entera, lo que indica que la distribución de las notas es bastante uniforme y no hay una gran desigualdad en el desempeño de los estudiantes. Una medida adicional que podemos usar para evaluar la distribución de los datos es la desviación típica, también conocida como desviación estándar. Esta medida nos permite determinar cuán dispersos están los datos en relación con su media. Revisaremos el valor de la desviación típica para obtener más información sobre la distribución de las notas de matemáticas en las pruebas del ICFES.
 
 ```{r echo=TRUE}
 sd(SB11_20112$MATEMATICAS_PUNT); var(SB11_20112$MATEMATICAS_PUNT)
 ```
 
-Aunque el 50% de los valores están relativamente cerca a la media, las medidas de desviación estándar y varianza nos permiten entender mejor los valores atípicos y aislados que se mostraron en el boxplot anterior. Estas medidas nos ayudan a identificar los valores que se alejan mucho del promedio y nos permiten determinar cuán dispersos están los datos en relación a su media.
+Aunque el 50% de los valores están relativamente cerca a la media, las medidas de desviación estándar y varianza nos permiten entender mejor los valores atípicos y aislados que se mostraron en el boxplot anterior. Estas medidas nos ayudan a identificar los valores que se alejan mucho del promedio y nos permiten determinar cuán dispersos están los datos con relación a su media.
 
 Ahora, revisaremos los valores extremos y cuartiles de las notas de matemáticas en este período del ICFES. Como ya mencionamos, estos valores se visualizaron de manera gráfica en el boxplot que realizamos, pero no se mostró de manera clara dónde se encuentran exactamente estos puntos en el gráfico. Para entender mejor la distribución de los datos, vamos a calcular y analizar estos valores en detalle.
 
@@ -80,7 +80,7 @@ En esta parte, vamos a realizar una estimación de parámetros en torno a la med
 mean(SB11_20112$LENGUAJE_PUNT); sum(SB11_20112$LENGUAJE_PUNT)/length(SB11_20112$LENGUAJE_PUNT)
 ```
 
-Que ambos casos es 45.79. Ya sea usando la función 'mean' de R o sumando todos los valores y dividiendo por la cantidad de datos. Datos que al igual que el puntaje de matemáticas parecen tener una distribución normal.
+Que ambos casos es 45.79. Ya sea usando la función ' mean' de R o sumando todos los valores y dividiendo por la cantidad de datos. Datos que, al igual que el puntaje de matemáticas, parecen tener una distribución normal.
 
 ```{r echo=TRUE}
 hist(SB11_20112$LENGUAJE_PUNT)
@@ -92,9 +92,9 @@ Veamos si el qqplot nos permite entender un poco mejor los datos de lenguaje, co
 qqnorm(SB11_20112$LENGUAJE_PUNT)
 ```
 
-En la parte central, cercana a la media, parece que se asemeja a una distribución normal. Pero, se tienen saltos en las colas, cercanos a valores muy altos o muy bajos, se desdibuja la continuidad de esa normalidad. Como ya se expreso en el caso de matemáticas esos valores extremos, 0 y 100, podrían ser errores a la hora de realizar el computo de las pruebas o, personas que se les evaluó con cero, a pesar de no presentar el examen.
+En la parte central, cercana a la media, parece que se asemeja a una distribución normal. Pero, se tienen saltos en las colas, cercanos a valores muy altos o muy bajos, se desdibuja la continuidad de esa normalidad. Como ya se expresó en el caso de matemáticas, esos valores extremos, 0 y 100, podrían ser errores a la hora de realizar el cómputo de las pruebas o, personas que se les evaluó con cero, a pesar de no presentar el examen.
 
-Vamos realizar un muestreo de los datos y los visualizaremos con el fin de adquirir más información sobre la hipótesis de normalidad de la distribución de las notas en el área de lenguaje en relación a su media.
+Vamos a realizar un muestreo de los datos y los visualizaremos con el fin de adquirir más información sobre la hipótesis de normalidad de la distribución de las notas en el área de lenguaje con relación a su media.
 
 ```{r echo=TRUE}
 
@@ -128,7 +128,7 @@ points(
 )
 ```
 
-Como vemos, la nube de puntos importantes es entorno a la media. Juguemos un poco con el tamaño de la muestra y veamos que pasa.
+Como vemos, la nube de puntos importantes es en torno a la media. Juguemos un poco con el tamaño de la muestra y veamos que pasa.
 
 ```{r echo=TRUE}
 iteraciones <- 150 #La cantidad de la muestra es indiscrininada.
@@ -163,7 +163,7 @@ points(
 
 Como se muestra la gráfica, los datos convergen a la media poblacional. Es decir, a medida que aumentemos el tamaño de la muestra, nuestras medias muestrales convergen a la media poblacional.
 
-Para realizar un contraste de la media del ICFES en lenguaje, utilizaremos el test de t de Student para comparar la media de una muestra con la media poblacional esperada. Aún más vamos a separar a las personas que tienen carro y los que no tienen carro y, ver si esto tiene alguna incidencia a la hora presentar la prueba.
+Para realizar un contraste de la media del ICFES en lenguaje, utilizaremos el test de t-student para comparar la media de una muestra con la media poblacional esperada. Aún más vamos a separar a las personas que tienen carro y los que no tienen carro y, ver si esto tiene alguna incidencia a la hora presentar la prueba.
 
 ```{r echo=TRUE}
 
@@ -221,7 +221,7 @@ La recta en la gráfica es la recta y = x, el punto azul la media, lo que esto n
 mean(pval_A); mean(pval_B); max(pval_A); max(pval_B)
 ```
 
-Note que en cada uno de los casos, el valor máximo de los p-valores es cero. Es decir, que no hay información significativa, desde el punto de vista estadístico, para no decir que los intervalo de confianza están bien y que finalmente nos permite concluir, que hay una mejora en las resultados de lenguaje de pruebas ICFES si una persona tiene vehículo.
+Note que en cada uno de los casos, el valor máximo de los p-valores es cero. Es decir, que no hay información significativa, desde el punto de vista estadístico, para no decir que los intervalos de confianza están bien y que finalmente nos permite concluir, que hay una mejora en los resultados de lenguaje de pruebas ICFES si una persona tiene vehículo.
 
 Veamos que se tiene de las varianzas de ambas poblaciones:
 
@@ -233,7 +233,7 @@ Usamos el F-test para comparar las dos varianzas y determinar si hay una diferen
 
 El valor p es menor que 2.2e-16, lo que indica que hay una diferencia significativa entre las varianzas de los dos grupos de datos. Además, el intervalo de confianza del 95% para la razón de varianzas está entre 0.9494679 y 0.9666296, lo que confirma que las varianzas de las dos poblaciones son diferentes en un 95% de confianza. Por lo tanto, se puede concluir que la hipótesis alternativa de que la razón de varianzas verdadera no es igual a 1 es correcta.
 
-Por otra lado, ¿que podemos afirmar de la normalidad de estás muestras?. Realizamos un test de Lilliefors, que nos ayudara a dar respuesta a esto.
+Por otro lado, ¿qué podemos afirmar de la normalidad de estas muestras?. Realizamos un test de Lilliefors, que nos ayudara a dar respuesta a esto.
 
 ```{r echo=TRUE}
 #install.packages("nortest")
@@ -241,14 +241,13 @@ library(nortest)
 lillie.test(pobla_A)
 ```
 
-Dado que el p-valor es aproimadamente cero, lo que nos dice que hay una diferencia significativa entre como se distribuyen los datos en está muestra y una distribución normal. Es decir, los datos de la pobla_A no siguen una distribución normal.
-Ahora, pobla_A que es una muestra de las notas, de las personas que presentaron el examen ICFES, muestra que tiene la condición que estás personas no tiene vehículo. Si la muestra no tiene una distribución normal, lo tendrá la población?
+Dado que el p-valor es aproximadamente cero, lo que nos dice que hay una diferencia significativa entre como se distribuyen los datos en esta muestra y una distribución normal. Es decir, los datos de la pobla_A no siguen una distribución normal. Ahora, pobla_A que es una muestra de las notas, de las personas que presentaron el examen ICFES, muestra que tiene la condición que estás personas, no tiene vehículo. ¿Si la muestra no tiene una distribución normal, lo tendrá la población?
 
 ```{r echo=TRUE}
  wilcox.test(SB11_20112$LENGUAJE_PUNT)
 ```
 
-Lo que nos dice el test de Kolmogorov-Smirnov, en este caso, es que no. Tenemos un p-valor muy cercano a cero lo que nos dice la hipótesis nula de la supuesta normalidad de los datos es rechazada. Es decir, las muestras no son normales, porque en general la población no es normal.
+Lo que nos dice el test de Kolmogorov-Smirnov, en este caso, es que no. Tenemos un p-valor muy cercano a cero, lo que nos dice la hipótesis nula de la supuesta normalidad de los datos es rechazada. Es decir, las muestras no son normales, porque en general la población no es normal.
 
 ## Regresión Lineal
 
@@ -403,18 +402,14 @@ Si se fija una variable y un valor de esa variable, es posible observar una dist
 
 ## Bibliografía
 
-[1] W. Larry, *All of Statistics*, 1st ed. Springer
-Science, 2004.
+[1] W. Larry, *All of Statistics*, 1st ed. Springer Science, 2004.
 
-[2] R Core Team, \'R: A Language and Environment for Statistical
-Computing\'. Vienna, Austria, 2018. [Online]. Available:
-<https://www.R-project.org/>
+[2] R Core Team, 'R: A Language and Environment for Statistical Computing'. Vienna, Austria, 2018. [Online]. Available: <https://www.R-project.org/>
 
-[3] Rs. Team, \'RStudio: Integrated Development Environment for
-R\'. RStudio, Inc., 2022.
+[3] Rs. Team, 'RStudio: Integrated Development Environment for R'. RStudio, Inc., 2022.
 
 [4] A. C. J. Luis, *Notas de Clase*. 2020.
 
-[5] ICFES, \'[https://www.icfes.gov.co/\',](https://www.icfes.gov.co/’,) Dec. 07, 2022.
+[5] ICFES, '[https://www.icfes.gov.co/',](https://www.icfes.gov.co/’,) Dec. 07, 2022.
 
-[6] Cruz Julian and Daniel, \'[https://github.com/nebulae-co/saber\',](https://github.com/nebulae-co/saber’,) Aug. 27, 2015.
+[6] Cruz Julian and Daniel, '[https://github.com/nebulae-co/saber',](https://github.com/nebulae-co/saber’,) Aug. 27, 2015.
