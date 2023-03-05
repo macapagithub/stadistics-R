@@ -74,7 +74,7 @@ De acuerdo con los datos, hay calificaciones extremas en torno a 0 y otras en to
 
 ## Inferencia
 
-En esta parte, vamos a realizar una estimación de parámetros en torno a la media de las notas de lenguaje en la prueba ICFES. La nota media de lenguaje en la prueba ICFES es un indicador importante que nos permite conocer el rendimiento general de los estudiantes en esta materia. Vamos a realizar una estimación precisa de la media, como sigue:
+En esta parte, vamos a realizar una estimación de parámetros en torno a la media de las notas de lenguaje en la prueba ICFES. La nota media de lenguaje en la prueba ICFES es un indicador importante que nos permite conocer el rendimiento general de los estudiantes en esta materia. Vamos a realizar una estimación precisa de la media, como sigue: 
 
 ```{r echo=TRUE}
 mean(SB11_20112$LENGUAJE_PUNT); sum(SB11_20112$LENGUAJE_PUNT)/length(SB11_20112$LENGUAJE_PUNT)
